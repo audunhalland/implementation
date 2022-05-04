@@ -126,6 +126,19 @@
 #[derive(Clone, Copy)]
 pub struct Impl<T>(T);
 
+impl<T> Impl<T> {
+    /// Construct a new [Impl].
+    pub fn new(value: T) -> Impl<T> {
+        Impl(value)
+    }
+}
+
+impl<T> From<T> for Impl<T> {
+    fn from(value: T) -> Impl<T> {
+        Impl(value)
+    }
+}
+
 impl<T> std::ops::Deref for Impl<T> {
     type Target = T;
 
@@ -137,6 +150,12 @@ impl<T> std::ops::Deref for Impl<T> {
 impl<T> std::ops::DerefMut for Impl<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
+    }
+}
+
+impl<T> AsRef<T> for Impl<T> {
+    fn as_ref(&self) -> &T {
+        &self.0
     }
 }
 
