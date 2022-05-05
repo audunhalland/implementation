@@ -6,7 +6,7 @@ license = "MIT"
 authors = ["Audun Halland <audun.halldand@pm.me>"]
 description = "The implementation crate"
 repository = "https://github.com/audunhalland/implementation/"
-keywords = ["impl", "trait", "actual implementation", "smart-pointer", "generics"]
+keywords = ["impl", "trait", "actual implementation", "generics", "coherence", "newtype"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
