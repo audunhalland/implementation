@@ -14,43 +14,35 @@ The trait represents some abstract computation. The trait exports a method signa
 can be implemented by types. In this case, we can imagine what a true implementation of the
 trait will do: _Actually scrape the internet_.
 
-`implementation` provides _impl target_ types for traits having the following semantics:
+`implementation` provides the [Impl] type as an implementation target for traits having the following semantics:
 
-* There is only one actual, true implementation.
-* Other implementations may exist, but they are interpreted as _fake_, _mocked_ in some way.
+* The trait has only one actual, true implementation.
+* Other implementations of the trait _may exist_, but these are interpreted as _fake_, _mocked_ in some way.
 
 `implementation` enables a standardized way of writing these actual implementations in a way
 that allows the actual `Self`-receiver type to be unknown.
-
-* For `self` receivers, implement for [`Impl<T>`](Impl).
-* For `&self` receivers, implement for [`Impl<&T>`](Impl).
-* For `&mut self` receivers, implement for [`Impl<&mut T>`](Impl).
 
 ## Usage
 To define the actual, generic implementation of `ScrapeTheInternet`, we can write the following impl:
 
 ```rust
-impl<'a, T> ScrapeTheInternet for implementation::Impl<&'a T> {
+impl<T> ScrapeTheInternet for implementation::Impl<T> {
     fn scrape_the_internet(&self) -> Vec<Website> {
         todo!("find all the web pages, etc")
     }
 }
 ```
 
-This code implements the trait for the pointer-like type [Impl], and by doing that we have asserted
+This code implements the trait for [Impl], and by doing that we have asserted
 that it is the actual, true implementation.
 
-The implementation is fully generic, and works for any `T`. This implementation can be invoked
-by converting `T` into a `Ref<'_, T>` by calling [BorrowImpl::borrow_impl]:
+The implementation is fully generic, and works for any `T`.
 
 ```rust
-use implementation::BorrowImpl;
-
 struct MyType;
 
 let my_type = MyType;
-my_type
-    .borrow_impl()
+implementation::Impl::new(MyType)
     .scrape_the_internet();
 ```
 
@@ -66,8 +58,8 @@ trait GetMaxNumberOfPages {
     fn get_max_number_of_pages(&self) -> Option<usize>;
 }
 
-impl<'a, T> ScrapeTheInternet for Impl<&'a T>
-    where Impl<&'a T>: GetMaxNumberOfPages
+impl<T> ScrapeTheInternet for Impl<T>
+    where Impl<T>: GetMaxNumberOfPages
 {
     fn scrape_the_internet(&self) -> Vec<Website> {
         let max_number_of_pages = self.get_max_number_of_pages();
@@ -76,7 +68,22 @@ impl<'a, T> ScrapeTheInternet for Impl<&'a T>
 }
 ```
 
-Now, `Impl<&T>` also need to provide an actual implementation of `GetMaxNumberOfPages`.
+Now, for this to work, `Impl<T>` also needs to implement `GetMaxNumberOfPages` (for the same `T` that is going to be used).
+
+`GetMaxNumberOfPages` would likely be implemented for a specific `T` rather than a generic one,
+since that `T` would typically be some configuration holding that number:
+
+```rust
+struct Config {
+    max_number_of_pages: Option<usize>
+}
+
+impl GetMaxNumberOfPages for implementation::Impl<Config> {
+    fn get_max_number_of_pages(&self) -> Option<usize> {
+        self.max_number_of_pages
+    }
+}
+```
 
 ## Explanation
 
@@ -103,3 +110,5 @@ That type is the [Impl] type.
 
 When we use this implementation, we can create as many fake implementations as we want.
 
+
+License: MIT
