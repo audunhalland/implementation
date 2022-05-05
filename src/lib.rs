@@ -133,6 +133,55 @@
 /// Wrapper type for targeting and accessing actual implementation.
 ///
 /// [Impl] has smart-pointer capabilities, as it implements [std::ops::Deref] and [std::ops::DerefMut].
+/// You may freely choose what kind of `T` you want to wrap. It may be an owned one or it could be
+/// a `&T`. Each have different tradeoffs.
+///
+/// An owned `T` is the most flexible in implementations, but that requires always owning "sub-implementations"
+/// through an `Impl`:
+///
+/// ```rust
+/// use implementation::Impl;
+///
+/// struct MyConfig {
+///     param1: i32,
+///     sub_config: Impl<SubConfig>,
+/// }
+///
+/// struct SubConfig {
+///     param2: i32,
+/// }
+/// ```
+///
+/// A referenced `&T` makes it possible to _borrow_ an `Impl` from any `T`, but that _could_ prove to be
+/// more troublesome in some implementations. This also will require a reference-within-reference
+/// design in trait methods with a `&self` receiver, and some more boilerplate if it needs to be cloned:
+///
+/// ```
+/// use implementation::Impl;
+///
+/// trait DoSomething {
+///     fn something(&self);
+/// }
+///
+/// impl<'t, T> DoSomething for Impl<&'t T>
+///     where T: Clone + Send + 'static
+/// {
+///     // self is an `&Impl<&T>`:
+///     fn something(&self) {
+///
+///         // it will require some more code to make a proper clone of T:
+///         let t_clone = self.into_inner().clone();
+///
+///         let handle = std::thread::spawn(move || {
+///             let implementation = Impl::new(&t_clone);
+///
+///             // Do something else with Impl<&T>
+///         });
+///
+///         handle.join().unwrap();
+///     }
+/// }
+/// ```
 #[derive(Clone, Copy, Default, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Impl<T>(T);
 
