@@ -182,7 +182,7 @@
 ///     }
 /// }
 /// ```
-#[derive(Clone, Copy, Default, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct Impl<T>(T);
 
 impl<T> Impl<T> {
