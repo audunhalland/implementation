@@ -39,11 +39,11 @@ that it is the actual, true implementation.
 The implementation is fully generic, and works for any `T`.
 
 ```rust
+use implementation::Impl;
+
 struct MyType;
 
-let my_type = MyType;
-implementation::Impl::new(MyType)
-    .scrape_the_internet();
+let websites = Impl::new(MyType).scrape_the_internet();
 ```
 
 ### Trait bounds

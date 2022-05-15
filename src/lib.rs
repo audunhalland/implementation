@@ -51,11 +51,11 @@
 //! #         todo!("find all the web pages, etc")
 //! #     }
 //! # }
+//! use implementation::Impl;
+//!
 //! struct MyType;
 //!
-//! let my_type = MyType;
-//! implementation::Impl::new(MyType)
-//!     .scrape_the_internet();
+//! let websites = Impl::new(MyType).scrape_the_internet();
 //! ```
 //!
 //! ## Trait bounds
