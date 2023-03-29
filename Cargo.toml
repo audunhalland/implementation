@@ -7,6 +7,7 @@ authors = ["Audun Halland <audun.halldand@pm.me>"]
 description = "The implementation crate"
 repository = "https://github.com/audunhalland/implementation/"
 keywords = ["impl", "implementation", "actual", "real"]
+categories = ["rust-patterns"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
