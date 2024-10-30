@@ -130,6 +130,8 @@
 //! When we use this implementation, we can create as many fake implementations as we want.
 //!
 
+#![no_std]
+
 /// Wrapper type for targeting and accessing actual implementation.
 ///
 /// [Impl] has smart-pointer capabilities, as it implements [std::ops::Deref] and [std::ops::DerefMut].
@@ -202,7 +204,7 @@ impl<T> From<T> for Impl<T> {
     }
 }
 
-impl<T> std::ops::Deref for Impl<T> {
+impl<T> core::ops::Deref for Impl<T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -210,7 +212,7 @@ impl<T> std::ops::Deref for Impl<T> {
     }
 }
 
-impl<T> std::ops::DerefMut for Impl<T> {
+impl<T> core::ops::DerefMut for Impl<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
